@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import "./App.css";
 
 function App() {
+	const input = useRef<HTMLInputElement>(null);
 	const [todoList, setTodoList] = useState<{ id: number; taskName: string }[]>(
 		[]
 	);
@@ -20,16 +21,14 @@ function App() {
 				taskName: newTask,
 			};
 			setTodoList([...todoList, task]);
-			clearInput();
+			if (input.current !== null) {
+				input.current.value = "";
+			}
 		} else return;
-		console.log(newTask);
-	}
-
-	function clearInput() {
 		setNewTask("");
 	}
 
-	function deleteTask(id: number | any) {
+	function deleteTask(id: object) {
 		setTodoList(todoList.filter((task) => task !== id));
 	}
 
@@ -38,6 +37,7 @@ function App() {
 			<form className="flex flex-col content-center mt-28">
 				<input
 					type="text"
+					ref={input}
 					placeholder="Enter Task"
 					onChange={handleChange}
 					className="p-2 rounded"
@@ -45,7 +45,7 @@ function App() {
 				<button
 					type="submit"
 					onClick={addTask}
-					className="p-2 bg-slate-600 mt-1"
+					className="p-2 bg-slate-600 mt-1 rounded"
 				>
 					Add Task
 				</button>
@@ -53,14 +53,14 @@ function App() {
 			<div>
 				<ul className="mt-12">
 					{todoList.map((todo) => (
-						<div key={todo.id} className="flex gap-4 mt-2 justify-between">
-							<li className="py-2 text-xl">
-								{todo.taskName}
-								{/* {todo.id} */}
-							</li>
+						<div
+							key={todo.id}
+							className="flex gap-4 mt-2 pl-4 justify-between border-2 rounded-lg"
+						>
+							<li className="py-2 text-xl">{todo.taskName}</li>
 							<button
 								onClick={() => deleteTask(todo)}
-								className="text-red-700 bg-zinc-300 px-4 rounded cursor-pointer"
+								className="text-red-700 bg-zinc-300 px-4 rounded-tr rounded-br cursor-pointer"
 							>
 								X
 							</button>
